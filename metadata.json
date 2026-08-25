@@ -1,0 +1,6 @@
+{
+  "name": "Bridges Food & Delivery",
+  "description": "A modern, high-contrast food and grocery delivery landing page for Kenyan restaurant brand Bridges, featuring live location discovery, restaurant showcase, and app downloads.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
