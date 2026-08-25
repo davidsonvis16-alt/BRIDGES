@@ -2,7 +2,7 @@ import React from 'react';
 import { Zap, UtensilsCrossed, ShoppingBag, ArrowRight, ShieldCheck } from 'lucide-react';
 import { motion } from 'motion/react';
 import { VALUE_PROPS } from '../data/mockData';
-import { YellowTiltedCards } from './YellowTiltedCards';
+import { PromoCards } from './PromoCards';
 
 interface ValuePropsProps {
   onOpenPartner: (type: 'courier' | 'restaurant') => void;
@@ -30,7 +30,7 @@ export const ValueProps: React.FC<ValuePropsProps> = ({
     <section id="value-props-section" className="py-16 sm:py-24 bg-white dark:bg-zinc-900 border-y border-zinc-100 dark:border-zinc-800 relative overflow-hidden transition-colors duration-200 scroll-mt-20">
       {/* Dynamic Yellow Tilted Food Cards Showcase */}
       <div className="relative z-10 -mt-4 sm:-mt-8 mb-6">
-        <YellowTiltedCards />
+        <PromoCards />
       </div>
 
       <motion.div
