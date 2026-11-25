@@ -1,39 +1,45 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
+/* Bridges design tokens.
+   One brand colour (deep green), near-black ink, warm off-white paper.
+   Use these instead of raw hex values: bg-brand, text-ink, border-line, etc. */
+@theme {
+  --font-sans: "Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-ink: #151515;
+  --color-ink-soft: #3b3a37;
+  --color-muted: #6b6a65;
+  --color-paper: #f7f6f2;
+  --color-line: #e3e1da;
+
+  --color-brand: #0d5c3b;
+  --color-brand-dark: #094129;
+  --color-brand-tint: #e8f0eb;
+}
 
 html {
   scroll-behavior: smooth;
 }
 
-/* Smooth transition for theme switching on backgrounds and borders */
-html.dark {
-  color-scheme: dark;
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+::selection {
+  background: var(--color-brand);
+  color: #fff;
 }
 
-@keyframes sectionEntranceGlow {
-  0% {
-    box-shadow: 0 0 0 0 rgba(255, 194, 68, 0);
-  }
-  25% {
-    box-shadow: 0 0 0 8px rgba(255, 194, 68, 0.28), 0 10px 30px -10px rgba(255, 194, 68, 0.2);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(255, 194, 68, 0);
-  }
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
 }
 
-.section-entrance-glow {
-  animation: sectionEntranceGlow 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  border-radius: 1.5rem;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
-

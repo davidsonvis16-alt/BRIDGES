@@ -1,6 +1,10 @@
+/** Category ids a listing appears under (see data/categories.ts). */
+export type ListingKind = 'food' | 'groceries' | 'coffee' | 'pharmacy';
+
 export interface RestaurantBrand {
   id: string;
   name: string;
+  kinds: ListingKind[];
   category: string;
   imageUrl: string;
   logoUrl?: string;

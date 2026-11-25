@@ -1,11 +1,16 @@
 import { RestaurantBrand, CityCoverage, ValueProp } from '../types';
 
+/** Pexels CDN URL for a photo id, resized to the given width. Photos: https://www.pexels.com/license/ */
+const px = (id: number, w = 800) =>
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`;
+
 export const RESTAURANT_BRANDS: RestaurantBrand[] = [
   {
     id: 'artcaffe',
     name: 'Artcaffé',
+    kinds: ['food', 'coffee'],
     category: 'Bakery & Gourmet Bistro',
-    imageUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80',
+    imageUrl: px(30573107, 800),
     deliveryTime: '20-30 min',
     rating: 4.8,
     ratingCount: '1.4k+',
@@ -18,7 +23,7 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Artcaffé Truffle Burger',
         description: 'Prime beef patty with truffle mayo, melted gouda, caramelized onions, and hand-cut herb fries.',
         price: 1350,
-        imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(70497, 400),
         isPopular: true,
       },
       {
@@ -26,7 +31,7 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Salted Caramel Croissant',
         description: 'Warm, golden butter croissant infused with house-made salted caramel and toasted almonds.',
         price: 450,
-        imageUrl: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(30427445, 400),
         isPopular: true,
       },
       {
@@ -34,15 +39,16 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Iced Spanish Latte',
         description: 'Single-origin Kenyan espresso pulled over condensed milk and chilled fresh dairy.',
         price: 420,
-        imageUrl: 'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(11136849, 400),
       }
     ]
   },
   {
     id: 'java-house',
     name: 'Java House Kenya',
+    kinds: ['food', 'coffee'],
     category: 'Breakfast & Cafe',
-    imageUrl: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=600&q=80',
+    imageUrl: px(4552170, 800),
     deliveryTime: '25-35 min',
     rating: 4.7,
     ratingCount: '2.1k+',
@@ -55,7 +61,7 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Java Legendary Espresso Shake',
         description: 'Rich dark espresso blended with creamy vanilla ice cream, whipped cream & chocolate drizzle.',
         price: 580,
-        imageUrl: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(11381485, 400),
         isPopular: true,
       },
       {
@@ -63,7 +69,7 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Grand Breakfast Platter',
         description: 'Two free-range eggs, grilled beef sausage, bacon rashers, baked beans, home fries & buttered toast.',
         price: 1100,
-        imageUrl: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(10720381, 400),
         isPopular: true,
       },
       {
@@ -71,15 +77,16 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Spicy Chicken Samosas (3pcs)',
         description: 'Crisp pastry triangles stuffed with spiced minced chicken, fresh coriander, and mint dip.',
         price: 380,
-        imageUrl: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(14477873, 400),
       }
     ]
   },
   {
     id: 'cjs',
     name: "CJ's Restaurant",
+    kinds: ['food'],
     category: 'Continental & Platters',
-    imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
+    imageUrl: px(2015191, 800),
     deliveryTime: '30-40 min',
     rating: 4.9,
     ratingCount: '3.5k+',
@@ -92,7 +99,7 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: "CJ's Sizzling Beef Fajitas",
         description: 'Marinated beef strips grilled with peppers, served with soft tortillas, guacamole, sour cream and salsa.',
         price: 1650,
-        imageUrl: 'https://images.unsplash.com/photo-1534352956036-cd81e27dd615?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(32375350, 400),
         isPopular: true,
       },
       {
@@ -100,7 +107,7 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Passion Mint Mojito (Pitcher)',
         description: 'Fresh Kenyan passion fruit, crushed mint, lime juice, and sparkling soda.',
         price: 520,
-        imageUrl: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(30591638, 400),
         isPopular: true,
       },
       {
@@ -108,15 +115,16 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Loaded Philly Cheesesteak',
         description: 'Tender sliced sirloin grilled with sautéed onions, mushrooms, and melted provolone in a toasted hoagie.',
         price: 1450,
-        imageUrl: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(36501097, 400),
       }
     ]
   },
   {
     id: 'galitos',
     name: "Galito's Flame Grilled",
+    kinds: ['food'],
     category: 'Flame-Grilled Chicken',
-    imageUrl: 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?auto=format&fit=crop&w=600&q=80',
+    imageUrl: px(5704254, 800),
     deliveryTime: '20-30 min',
     rating: 4.6,
     ratingCount: '980+',
@@ -129,7 +137,7 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Full Flame-Grilled Chicken Meal',
         description: 'Whole chicken basted in Lemon & Herb, Mild, Hot, or Extra Hot Peri-Peri, served with large chips & 2 garlic rolls.',
         price: 1750,
-        imageUrl: 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(106343, 400),
         isPopular: true,
       },
       {
@@ -137,7 +145,7 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Peri Chicken Liver Roll',
         description: 'Tender pan-seared spicy chicken livers in rich gravy, tucked inside a fresh crusty Portuguese roll.',
         price: 490,
-        imageUrl: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(9624298, 400),
         isPopular: true,
       }
     ]
@@ -145,8 +153,9 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
   {
     id: 'mama-oliech',
     name: 'Mama Oliech Restaurant',
+    kinds: ['food'],
     category: 'Kenyan Local Delicacies',
-    imageUrl: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80',
+    imageUrl: px(16931505, 800),
     deliveryTime: '25-35 min',
     rating: 4.9,
     ratingCount: '4.2k+',
@@ -159,7 +168,7 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Crisp Whole Tilapia with Brown Ugali',
         description: 'Fresh jumbo Lake Victoria Tilapia deep-fried crisp, served with steaming brown ugali, collard greens, and fresh kachumbari salsa.',
         price: 1200,
-        imageUrl: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(16931505, 400),
         isPopular: true,
       },
       {
@@ -167,7 +176,7 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Wet Fry Tilapia in Coconut Gravy',
         description: 'Tender tilapia fillets simmered with ripe tomatoes, onions, garlic, and fresh coastal coconut cream.',
         price: 1350,
-        imageUrl: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(8611130, 400),
         isPopular: true,
       }
     ]
@@ -175,8 +184,9 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
   {
     id: 'swahili-plate',
     name: 'Swahili Plate & Grill',
+    kinds: ['food'],
     category: 'Coastal & Biryani',
-    imageUrl: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80',
+    imageUrl: px(2092916, 800),
     deliveryTime: '15-25 min',
     rating: 4.8,
     ratingCount: '1.8k+',
@@ -189,7 +199,7 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Mombasa Goat Biryani Ya Mbuzi',
         description: 'Tender slow-cooked goat meat in aromatic coastal spices, layered with basmati saffron rice and boiled egg.',
         price: 950,
-        imageUrl: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(7340956, 400),
         isPopular: true,
       },
       {
@@ -197,7 +207,7 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Warm Mahamri & Mbaazi (4pcs)',
         description: 'Fluffy cardamom-infused fried Swahili dough pockets paired with rich pigeon peas simmered in thick coconut sauce.',
         price: 480,
-        imageUrl: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(13915068, 400),
         isPopular: true,
       }
     ]
@@ -205,8 +215,9 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
   {
     id: 'big-square',
     name: 'Big Square Kenya',
+    kinds: ['food'],
     category: 'Burgers & BBQ Ribs',
-    imageUrl: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80',
+    imageUrl: px(3219547, 800),
     deliveryTime: '20-30 min',
     rating: 4.7,
     ratingCount: '1.6k+',
@@ -219,7 +230,7 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Sticky BBQ Pork/Beef Ribs Rack',
         description: 'Slow-smoked tender ribs glazed with house honey-chipotle BBQ sauce, served with seasoned wedges & slaw.',
         price: 1850,
-        imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(410648, 400),
         isPopular: true,
       },
       {
@@ -227,7 +238,7 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'The Big Square Double Smash',
         description: 'Two 150g beef patties, double cheddar cheese, dill pickles, crisp lettuce, and signature secret sauce.',
         price: 1150,
-        imageUrl: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(2271101, 400),
         isPopular: true,
       }
     ]
@@ -235,8 +246,9 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
   {
     id: 'bridges-mart',
     name: 'Bridges Mart & Fresh Produce',
+    kinds: ['groceries'],
     category: 'Groceries & Supermarket',
-    imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80',
+    imageUrl: px(264636, 800),
     deliveryTime: '15-20 min',
     rating: 4.9,
     ratingCount: '5.1k+',
@@ -249,7 +261,7 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Fresh Farm Hass Avocado Bag (4pcs)',
         description: 'Ripe, creamy Kenyan Hass avocados directly from Central Kenya smallholders.',
         price: 240,
-        imageUrl: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(5966631, 400),
         isPopular: true,
       },
       {
@@ -257,11 +269,199 @@ export const RESTAURANT_BRANDS: RestaurantBrand[] = [
         name: 'Brookside Fresh Whole Milk (500ml x 3)',
         description: 'Pasteurized homogenized full-cream fresh milk.',
         price: 210,
-        imageUrl: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=500&q=80',
+        imageUrl: px(5946742, 400),
         isPopular: true,
       }
     ]
-  }
+  },
+  // --- Additional listings (fictional names) ---
+  {
+    id: 'shamba-fresh',
+    name: 'Shamba Fresh Grocers',
+    kinds: ['groceries'],
+    category: 'Fruit & Vegetables',
+    imageUrl: px(17302468, 800),
+    deliveryTime: '20-30 min',
+    rating: 4.7,
+    ratingCount: '640+',
+    tag: 'Farm-fresh produce',
+    priceRange: 'KES',
+    description: 'Seasonal fruit and vegetables bought each morning from farms around Kiambu and Limuru.',
+    featuredItems: [
+      {
+        id: 'sf-1',
+        name: 'Mixed Vegetable Basket (3kg)',
+        description: 'Tomatoes, onions, sukuma wiki, carrots, capsicum and cabbage. Enough for a week of meals.',
+        price: 650,
+        imageUrl: px(2255924, 400),
+        isPopular: true,
+      },
+      {
+        id: 'sf-2',
+        name: 'Tropical Fruit Box',
+        description: 'Ripe bananas, mangoes, pineapple and passion fruit, picked for eating this week.',
+        price: 900,
+        imageUrl: px(709567, 400),
+      },
+    ],
+  },
+  {
+    id: 'mtaa-mini-market',
+    name: 'Mtaa Mini Market',
+    kinds: ['groceries'],
+    category: 'Everyday Essentials',
+    imageUrl: px(16211537, 800),
+    deliveryTime: '15-25 min',
+    rating: 4.5,
+    ratingCount: '410+',
+    tag: 'Open until midnight',
+    priceRange: 'KES',
+    description: 'Bread, eggs, flour, cooking oil, soap and airtime. The neighbourhood shop, delivered.',
+    featuredItems: [
+      {
+        id: 'mm-1',
+        name: 'Tray of Eggs (30)',
+        description: 'Fresh farm eggs, graded and checked.',
+        price: 480,
+        imageUrl: px(1631180, 400),
+        isPopular: true,
+      },
+      {
+        id: 'mm-2',
+        name: 'White Bread Loaf (600g)',
+        description: 'Soft sliced white bread, baked today.',
+        price: 75,
+        imageUrl: px(20149452, 400),
+      },
+    ],
+  },
+  {
+    id: 'ridge-roasters',
+    name: 'Ridge Roasters',
+    kinds: ['coffee'],
+    category: 'Coffee & Bakery',
+    imageUrl: px(19851795, 800),
+    deliveryTime: '15-25 min',
+    rating: 4.8,
+    ratingCount: '720+',
+    tag: 'Roasted in Nairobi',
+    priceRange: 'KES KES',
+    description: 'Small-batch Kenyan AA coffee, spiced chai and pastries baked each morning.',
+    featuredItems: [
+      {
+        id: 'rr-1',
+        name: 'Double Espresso',
+        description: 'Kenyan AA beans from Nyeri, roasted in-house.',
+        price: 250,
+        imageUrl: px(4350219, 400),
+        isPopular: true,
+      },
+      {
+        id: 'rr-2',
+        name: 'Spiced Masala Chai',
+        description: 'Kenyan black tea brewed with milk, ginger, cardamom and cinnamon.',
+        price: 220,
+        imageUrl: px(5946623, 400),
+      },
+      {
+        id: 'rr-3',
+        name: 'Cinnamon Roll',
+        description: 'Soft brioche dough, cinnamon sugar and cream cheese icing.',
+        price: 300,
+        imageUrl: px(3951306, 400),
+      },
+    ],
+  },
+  {
+    id: 'afya-plus',
+    name: 'Afya Plus Pharmacy',
+    kinds: ['pharmacy'],
+    category: 'Pharmacy & Health',
+    imageUrl: px(14797855, 800),
+    deliveryTime: '20-30 min',
+    rating: 4.8,
+    ratingCount: '530+',
+    tag: 'Pharmacist on call',
+    priceRange: 'KES KES',
+    description: 'Over-the-counter medicines, vitamins and first aid. Prescriptions are checked by a registered pharmacist before dispatch.',
+    featuredItems: [
+      {
+        id: 'ap-1',
+        name: 'Vitamin C 1000mg (30 tablets)',
+        description: 'Daily immune support supplement.',
+        price: 650,
+        imageUrl: px(13787566, 400),
+        isPopular: true,
+      },
+      {
+        id: 'ap-2',
+        name: 'Home First Aid Kit',
+        description: 'Plasters, gauze, bandages, antiseptic wipes, scissors and gloves.',
+        price: 1450,
+        imageUrl: px(5673523, 400),
+      },
+    ],
+  },
+  {
+    id: 'uzima-chemists',
+    name: 'Uzima Chemists',
+    kinds: ['pharmacy'],
+    category: 'Pharmacy & Wellness',
+    imageUrl: px(13119976, 800),
+    deliveryTime: '25-35 min',
+    rating: 4.6,
+    ratingCount: '380+',
+    tag: 'Open 24 hours',
+    priceRange: 'KES KES',
+    description: 'Round-the-clock chemist for everyday medicines, supplements and travel health.',
+    featuredItems: [
+      {
+        id: 'uz-1',
+        name: 'Omega-3 Fish Oil (60 capsules)',
+        description: 'One capsule a day with food.',
+        price: 1200,
+        imageUrl: px(14744699, 400),
+        isPopular: true,
+      },
+      {
+        id: 'uz-2',
+        name: 'Travel First Aid Pouch',
+        description: 'Compact kit for the car or a safari bag.',
+        price: 950,
+        imageUrl: px(5149757, 400),
+      },
+    ],
+  },
+  {
+    id: 'carewell',
+    name: 'CareWell Pharmacy',
+    kinds: ['pharmacy'],
+    category: 'Pharmacy & Personal Care',
+    imageUrl: px(8657368, 800),
+    deliveryTime: '20-30 min',
+    rating: 4.7,
+    ratingCount: '290+',
+    tag: 'Personal care & baby',
+    priceRange: 'KES KES',
+    description: 'Medicines, skin care, baby care and personal hygiene from a family-run pharmacy.',
+    featuredItems: [
+      {
+        id: 'cw-1',
+        name: 'First Aid Kit with Gloves',
+        description: 'Everything for minor cuts and scrapes at home or in the office.',
+        price: 1650,
+        imageUrl: px(5664736, 400),
+        isPopular: true,
+      },
+      {
+        id: 'cw-2',
+        name: 'Body Care Set',
+        description: 'Gentle body lotion and a soft cotton towel.',
+        price: 1100,
+        imageUrl: px(3872899, 400),
+      },
+    ],
+  },
 ];
 
 export const CITIES_COVERAGE: CityCoverage[] = [
