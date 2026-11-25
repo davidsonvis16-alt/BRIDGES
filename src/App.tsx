@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
-import { BrandShowcase } from './components/BrandShowcase';
+import { RestaurantList } from './components/RestaurantList';
 import { ValueProps } from './components/ValueProps';
 import { CoverageSection } from './components/CoverageSection';
 import { AppDownloadSection } from './components/AppDownloadSection';
@@ -12,8 +12,8 @@ import { PartnerModal } from './components/modals/PartnerModal';
 import { CookiePreferencesModal } from './components/modals/CookiePreferencesModal';
 import { CookieConsentBanner } from './components/CookieConsentBanner';
 import { RESTAURANT_BRANDS } from './data/mockData';
-import { RestaurantBrand, MenuItem, CookiePreferences } from './types';
-import { smoothScrollTo } from './utils/smoothScroll';
+import { RestaurantBrand, CookiePreferences } from './types';
+import { scrollToId, scrollToTop } from './utils/scroll';
 import {
   getSavedCookiePreferences,
   applyCookiePreferences,
@@ -23,231 +23,156 @@ import {
 } from './utils/cookieManager';
 
 export default function App() {
-  useEffect(() => {
-    document.documentElement.classList.remove('dark');
-    document.documentElement.setAttribute('data-theme', 'light');
-    try {
-      localStorage.removeItem('bridges_user_theme');
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  // Modal states
-  const [authModalOpen, setAuthModalOpen] = useState<boolean>(false);
+  // Modals
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
-  const [partnerModalOpen, setPartnerModalOpen] = useState<boolean>(false);
+  const [partnerModalOpen, setPartnerModalOpen] = useState(false);
   const [partnerType, setPartnerType] = useState<'courier' | 'restaurant'>('courier');
   const [selectedRestaurant, setSelectedRestaurant] = useState<RestaurantBrand | null>(null);
+  const [cookieModalOpen, setCookieModalOpen] = useState(false);
 
-  // Cookie collection & consent states
-  const [cookieModalOpen, setCookieModalOpen] = useState<boolean>(false);
+  // Cookie consent
   const [cookiePreferences, setCookiePreferences] = useState<CookiePreferences>(() => {
     const saved = getSavedCookiePreferences();
     if (saved) {
-      // Re-apply on load to ensure document.cookie is synchronized
       applyCookiePreferences(saved);
       return saved;
     }
     return DEFAULT_COOKIE_PREFERENCES;
   });
-  const [showCookieBanner, setShowCookieBanner] = useState<boolean>(() => {
-    const saved = getSavedCookiePreferences();
-    return !saved || !saved.consentGiven;
-  });
+  const [showCookieBanner, setShowCookieBanner] = useState(() => !getSavedCookiePreferences()?.consentGiven);
 
-  // Loading states
-  const [isBrandsLoading, setIsBrandsLoading] = useState<boolean>(false);
-
-  // Category and location filtering
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  // Browsing state
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [deliveryArea, setDeliveryArea] = useState<string | null>(null);
   const [currentLanguage, setCurrentLanguage] = useState<'en' | 'sw'>('en');
 
-  // Interactive feedback
-  const [activeNotification, setActiveNotification] = useState<string | null>(null);
-
-  const triggerNotification = (msg: string) => {
-    setActiveNotification(msg);
-    setTimeout(() => {
-      setActiveNotification(null);
-    }, 4000);
+  // Status message (plain toast)
+  const [notice, setNotice] = useState<string | null>(null);
+  const noticeTimer = useRef<number | undefined>(undefined);
+  const notify = (msg: string) => {
+    setNotice(msg);
+    window.clearTimeout(noticeTimer.current);
+    noticeTimer.current = window.setTimeout(() => setNotice(null), 4000);
   };
 
-  const handleOpenAuth = (mode: 'login' | 'signup' = 'login') => {
+  const openAuth = (mode: 'login' | 'signup' = 'login') => {
     setAuthMode(mode);
     setAuthModalOpen(true);
   };
 
-  const handleOpenPartner = (type: 'courier' | 'restaurant') => {
+  const openPartner = (type: 'courier' | 'restaurant') => {
     setPartnerType(type);
     setPartnerModalOpen(true);
   };
 
-  // Cookie Actions that actually write to document.cookie & localStorage
-  const handleAcceptAllCookies = () => {
-    const allPrefs = { ...ACCEPT_ALL_PREFERENCES };
-    setCookiePreferences(allPrefs);
-    applyCookiePreferences(allPrefs);
+  const saveCookies = (prefs: CookiePreferences, message: string) => {
+    const withConsent = { ...prefs, consentGiven: true };
+    setCookiePreferences(withConsent);
+    applyCookiePreferences(withConsent);
     setShowCookieBanner(false);
-    triggerNotification('All cookies accepted! Session, location, analytics & promo tokens active.');
-  };
-
-  const handleRejectNonEssentialCookies = () => {
-    const rejectPrefs = { ...STRICT_REJECT_PREFERENCES };
-    setCookiePreferences(rejectPrefs);
-    applyCookiePreferences(rejectPrefs);
-    setShowCookieBanner(false);
-    triggerNotification('Non-essential cookies declined. Only strictly necessary session cookies active.');
-  };
-
-  const handleSaveCustomCookiePreferences = (customPrefs: CookiePreferences) => {
-    const updated = { ...customPrefs, consentGiven: true };
-    setCookiePreferences(updated);
-    applyCookiePreferences(updated);
-    setShowCookieBanner(false);
-    triggerNotification('Your custom cookie privacy settings have been saved!');
+    notify(message);
   };
 
   const handleSearchLocation = (location: string) => {
-    setIsBrandsLoading(true);
-    triggerNotification(`Set delivery address to: ${location}. Showing nearby spots.`);
-    smoothScrollTo('restaurants-section', { duration: 750, highlightTarget: true });
-    setTimeout(() => {
-      setIsBrandsLoading(false);
-    }, 400);
+    setDeliveryArea(location);
+    scrollToId('restaurants-section');
   };
 
   const handleSelectCategory = (categoryId: string) => {
-    if (categoryId !== selectedCategory) {
-      setIsBrandsLoading(true);
-      setSelectedCategory(categoryId);
-      setTimeout(() => {
-        setIsBrandsLoading(false);
-      }, 350);
-    }
-    smoothScrollTo('restaurants-section', { duration: 750, highlightTarget: true });
+    setSelectedCategory(categoryId);
+    scrollToId('restaurants-section');
   };
 
   const handleSelectEstate = (estate: string, city: string) => {
-    triggerNotification(`Selected ${estate}, ${city}. Checking available couriers...`);
-    const heroInput = document.getElementById('hero-address-search-input') as HTMLInputElement;
-    if (heroInput) {
-      heroInput.value = `${estate}, ${city}`;
-    }
-    smoothScrollTo(0, { duration: 700 });
-  };
-
-  const handleAddToCart = (item: MenuItem, restaurant: RestaurantBrand) => {
-    triggerNotification(`Added "${item.name}" from ${restaurant.name} (KES ${item.price}) to your Bridges order!`);
+    const area = `${estate}, ${city}`;
+    setDeliveryArea(area);
+    notify(`Delivery address set to ${area}.`);
+    scrollToTop();
   };
 
   const toggleLanguage = () => {
-    const newLang = currentLanguage === 'en' ? 'sw' : 'en';
-    setCurrentLanguage(newLang);
-    triggerNotification(
-      newLang === 'en'
-        ? 'Switched language to English (Kenya)'
-        : 'Umebadilisha lugha kuwa Kiswahili'
-    );
+    const next = currentLanguage === 'en' ? 'sw' : 'en';
+    setCurrentLanguage(next);
+    // Full Kiswahili translations are not in place yet; this records the preference.
+    notify(next === 'en' ? 'Language set to English.' : 'Lugha imewekwa kuwa Kiswahili.');
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAFAFA] font-['Plus_Jakarta_Sans',sans-serif] text-zinc-900 selection:bg-[#FFC244] selection:text-black transition-colors duration-200">
-      {/* 1. Sticky Header */}
+    <div className="min-h-screen flex flex-col">
       <Header
-        onOpenAuth={handleOpenAuth}
-        onOpenPartner={handleOpenPartner}
+        onOpenAuth={openAuth}
+        onOpenPartner={openPartner}
         currentLang={currentLanguage}
         onToggleLang={toggleLanguage}
       />
 
-      {/* Main Page Body */}
       <main className="flex-1">
-        {/* 2. Hero Section with bold warm background, location search, and curved divider */}
         <HeroSection
           onSearchLocation={handleSearchLocation}
           onSelectCategory={handleSelectCategory}
           selectedCategory={selectedCategory}
+          deliveryArea={deliveryArea}
         />
-
-        {/* 3. Horizontal scroll row of top restaurant/brand logos in circular frames */}
-        <BrandShowcase
+        <RestaurantList
           restaurants={RESTAURANT_BRANDS}
-          onSelectRestaurant={(rest) => setSelectedRestaurant(rest)}
+          onSelectRestaurant={setSelectedRestaurant}
           selectedCategory={selectedCategory}
           onFilterChange={setSelectedCategory}
-          isLoading={isBrandsLoading}
+          deliveryArea={deliveryArea}
         />
-
-        {/* 4. Three-column "value props" section with custom icons */}
-        <ValueProps
-          onOpenPartner={handleOpenPartner}
-          onExploreFood={() => {
-            smoothScrollTo('restaurants-section', { duration: 750, highlightTarget: true });
-          }}
-        />
-
-        {/* 5. "Where we deliver" coverage section with city and estate badges */}
+        <ValueProps onOpenPartner={openPartner} />
         <CoverageSection onSelectEstate={handleSelectEstate} />
-
-        {/* 6. App download section with phone mockups and store badges */}
         <AppDownloadSection />
       </main>
 
-      {/* 7. Multi-column Footer */}
       <Footer
-        onOpenPartner={handleOpenPartner}
-        onOpenAuth={handleOpenAuth}
+        onOpenPartner={openPartner}
+        onOpenAuth={openAuth}
         onOpenCookies={() => setCookieModalOpen(true)}
         currentLang={currentLanguage}
         onToggleLang={toggleLanguage}
       />
 
-      {/* Real, Working Cookie Consent Banner */}
       <CookieConsentBanner
         isVisible={showCookieBanner}
-        onAcceptAll={handleAcceptAllCookies}
-        onRejectNonEssential={handleRejectNonEssentialCookies}
+        onAcceptAll={() => saveCookies(ACCEPT_ALL_PREFERENCES, 'Cookie preferences saved.')}
+        onRejectNonEssential={() => saveCookies(STRICT_REJECT_PREFERENCES, 'Only essential cookies will be used.')}
         onOpenPreferences={() => setCookieModalOpen(true)}
       />
 
-      {/* Interactive Modals */}
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        initialMode={authMode}
-      />
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} initialMode={authMode} />
 
       <RestaurantModal
         restaurant={selectedRestaurant}
         isOpen={!!selectedRestaurant}
         onClose={() => setSelectedRestaurant(null)}
-        onAddToCart={handleAddToCart}
+        onCheckout={(r, total, count) =>
+          notify(`${count} item${count > 1 ? 's' : ''} from ${r.name}, KES ${total.toLocaleString('en-KE')}. Checkout is coming soon.`)
+        }
       />
 
-      <PartnerModal
-        isOpen={partnerModalOpen}
-        onClose={() => setPartnerModalOpen(false)}
-        type={partnerType}
-      />
+      <PartnerModal isOpen={partnerModalOpen} onClose={() => setPartnerModalOpen(false)} type={partnerType} />
 
       <CookiePreferencesModal
         isOpen={cookieModalOpen}
         onClose={() => setCookieModalOpen(false)}
         currentPreferences={cookiePreferences}
-        onSavePreferences={handleSaveCustomCookiePreferences}
-        onAcceptAll={handleAcceptAllCookies}
-        onRejectNonEssential={handleRejectNonEssentialCookies}
+        onSavePreferences={(p) => saveCookies(p, 'Cookie preferences saved.')}
+        onAcceptAll={() => saveCookies(ACCEPT_ALL_PREFERENCES, 'Cookie preferences saved.')}
+        onRejectNonEssential={() => saveCookies(STRICT_REJECT_PREFERENCES, 'Only essential cookies will be used.')}
       />
 
-      {/* Global Interactive Notification Pill */}
-      {activeNotification && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-zinc-900 text-white px-5 py-3 rounded-2xl shadow-2xl border border-zinc-800 text-xs sm:text-sm font-bold flex items-center gap-2.5 animate-bounce">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#FFC244]" />
-          <span>{activeNotification}</span>
+      {notice && (
+        <div
+          role="status"
+          className={`fixed left-1/2 -translate-x-1/2 z-50 max-w-[calc(100%-2rem)] bg-ink text-white text-sm px-4 py-3 rounded-md shadow-lg ${
+            showCookieBanner ? 'bottom-28 md:bottom-20' : 'bottom-6'
+          }`}
+        >
+          {notice}
         </div>
       )}
     </div>
   );
 }
-

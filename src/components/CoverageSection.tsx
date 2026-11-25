@@ -1,180 +1,105 @@
 import React, { useState } from 'react';
-import { MapPin, CheckCircle, Clock, Users, Search, ArrowUpRight } from 'lucide-react';
-import { motion } from 'motion/react';
+import { Search } from 'lucide-react';
 import { CITIES_COVERAGE } from '../data/mockData';
-import { BrandedBeverageBackdrop } from './BrandedBeverageBackdrop';
 
 interface CoverageSectionProps {
   onSelectEstate: (estateName: string, city: string) => void;
 }
 
-export const CoverageSection: React.FC<CoverageSectionProps> = ({
-  onSelectEstate,
-}) => {
+export const CoverageSection: React.FC<CoverageSectionProps> = ({ onSelectEstate }) => {
   const [selectedCityId, setSelectedCityId] = useState<string>('nairobi');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const currentCity = CITIES_COVERAGE.find((c) => c.id === selectedCityId) || CITIES_COVERAGE[0];
-
-  const filteredEstates = currentCity.popularEstates.filter((estate) =>
-    estate.toLowerCase().includes(searchQuery.toLowerCase())
+  const city = CITIES_COVERAGE.find((c) => c.id === selectedCityId) ?? CITIES_COVERAGE[0];
+  const isLive = city.status === 'active';
+  const estates = city.popularEstates.filter((e) =>
+    e.toLowerCase().includes(searchQuery.trim().toLowerCase())
   );
 
   return (
-    <section id="coverage-section" className="py-16 sm:py-24 bg-[#FAFAFA] dark:bg-zinc-950 relative overflow-hidden transition-colors duration-200 scroll-mt-20">
-      {/* Background Beverage Splashes branded with Bridges Logo */}
-      <BrandedBeverageBackdrop />
+    <section id="coverage-section" className="py-16 sm:py-20 scroll-mt-16">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <h2 className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em] text-ink">
+          Where we deliver
+        </h2>
+        <p className="mt-2 text-[15px] text-muted max-w-xl">
+          Pick your city to see the neighbourhoods we cover. Not listed? Enter your address above and
+          we will check.
+        </p>
 
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.12 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
-      >
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300 bg-amber-100/80 dark:bg-amber-950/60 dark:border dark:border-amber-800/40 px-3 py-1 rounded-full mb-3 shadow-xs">
-            <MapPin className="w-3.5 h-3.5" />
-            <span>Expanding Across East Africa</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-950 dark:text-zinc-100 tracking-tight">
-            Where we deliver in Kenya
-          </h2>
-          <p className="text-base text-zinc-600 dark:text-zinc-400 mt-2 font-medium">
-            From the bustling streets of Nairobi to the coastal breeze of Mombasa, check your neighborhood.
-          </p>
-        </div>
-
-        {/* City Filter Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 mb-10 max-w-4xl mx-auto">
-          {CITIES_COVERAGE.map((city) => {
-            const isSelected = city.id === selectedCityId;
-            return (
-              <button
-                key={city.id}
-                id={`city-pill-${city.id}`}
-                onClick={() => {
-                  setSelectedCityId(city.id);
-                  setSearchQuery('');
-                }}
-                className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide transition-all duration-150 flex items-center gap-2 cursor-pointer backdrop-blur-xs ${
-                  isSelected
-                    ? 'bg-zinc-950 text-[#FFC244] shadow-[0_3px_0_0_#000000] scale-105'
-                    : 'bg-white/95 dark:bg-zinc-900/90 text-zinc-800 dark:text-zinc-200 border border-zinc-200/80 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 shadow-sm'
-                }`}
-              >
-                <span>{city.name}</span>
-                {city.status === 'active' ? (
-                  <span
-                    className={`text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded ${
-                      isSelected
-                        ? 'bg-[#FFC244]/20 text-[#FFC244]'
-                        : 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300'
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-12 gap-6">
+          {/* City list */}
+          <ul className="md:col-span-4 rounded-md border border-line bg-white divide-y divide-line self-start">
+            {CITIES_COVERAGE.map((c) => {
+              const active = c.id === selectedCityId;
+              return (
+                <li key={c.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedCityId(c.id);
+                      setSearchQuery('');
+                    }}
+                    aria-current={active}
+                    className={`w-full flex items-center justify-between px-4 py-3 text-left text-[15px] cursor-pointer ${
+                      active ? 'bg-brand-tint text-brand-dark font-medium' : 'text-ink hover:bg-paper'
                     }`}
                   >
-                    Live
-                  </span>
-                ) : (
-                  <span className="text-[10px] uppercase font-bold text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">
-                    Soon
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
+                    <span>{c.name}</span>
+                    <span className="text-xs text-muted">
+                      {c.status === 'active' ? c.avgTime : 'Coming soon'}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
 
-        {/* Selected City Coverage Card */}
-        <div className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-zinc-200/80 dark:border-zinc-800 shadow-xl max-w-5xl mx-auto relative z-10">
-          {/* Card Header with Stats */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-zinc-100 dark:border-zinc-800">
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-2xl sm:text-3xl font-black text-zinc-950 dark:text-zinc-100">
-                  {currentCity.name}, Kenya
-                </h3>
-                <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/70 px-2.5 py-1 rounded-full">
-                  <CheckCircle className="w-3.5 h-3.5" />
-                  Live 7 Days / Week
-                </span>
-              </div>
-              <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1 font-medium">
-                Showing coverage zones & active delivery hubs in {currentCity.name}.
+          {/* Selected city */}
+          <div className="md:col-span-8 rounded-md border border-line bg-white p-6 sm:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 pb-6 border-b border-line">
+              <h3 className="text-2xl font-semibold tracking-[-0.02em] text-ink">{city.name}</h3>
+              <p className="text-sm text-muted">
+                {isLive ? `Average delivery ${city.avgTime} · ${city.riderCount}` : city.riderCount}
               </p>
             </div>
 
-            {/* Quick Metrics */}
-            <div className="flex items-center gap-4 bg-zinc-50 dark:bg-zinc-950 p-3 rounded-2xl border border-zinc-100 dark:border-zinc-800">
-              <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">{currentCity.riderCount}</span>
-              </div>
-              {currentCity.avgTime !== '--' && (
-                <>
-                  <div className="w-px h-4 bg-zinc-200 dark:bg-zinc-800" />
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
-                    <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">
-                      Avg {currentCity.avgTime}
-                    </span>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Search Filter for Estates */}
-          <div className="mt-6 mb-4">
-            <div className="relative max-w-md">
-              <Search className="w-4 h-4 text-zinc-400 dark:text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <label className="mt-6 flex items-center gap-2 h-10 px-3 max-w-sm rounded-md border border-line focus-within:border-brand">
+              <Search className="w-4 h-4 text-muted" />
+              <span className="sr-only">Search neighbourhoods in {city.name}</span>
               <input
-                id="coverage-estate-search-input"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={`Search neighborhood in ${currentCity.name} (e.g. Westlands)...`}
-                className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#FFC244] text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
+                placeholder={`Search ${city.name} neighbourhoods`}
+                className="w-full bg-transparent text-sm text-ink placeholder:text-muted focus:outline-none"
               />
-            </div>
-          </div>
+            </label>
 
-          {/* Neighborhood & Branch Badges Grid */}
-          <div className="flex flex-wrap gap-2 sm:gap-2.5 mt-4">
-            {filteredEstates.length > 0 ? (
-              filteredEstates.map((estate, idx) => (
-                <button
-                  key={idx}
-                  id={`estate-badge-${idx}`}
-                  onClick={() => onSelectEstate(estate, currentCity.name)}
-                  className="px-4 py-2 rounded-2xl bg-zinc-100 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 border border-transparent dark:border-zinc-800 hover:bg-[#FFC244] dark:hover:bg-[#FFC244] hover:text-black dark:hover:text-black hover:border-[#FFC244] dark:hover:border-[#FFC244] font-semibold text-xs sm:text-sm transition-all duration-150 flex items-center gap-1.5 group cursor-pointer"
-                >
-                  <span>{estate}</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-                </button>
-              ))
+            {estates.length > 0 ? (
+              <ul className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-x-6">
+                {estates.map((estate) => (
+                  <li key={estate} className="border-b border-line">
+                    <button
+                      type="button"
+                      onClick={() => onSelectEstate(estate, city.name)}
+                      disabled={!isLive}
+                      className="w-full py-2.5 text-left text-[15px] text-ink hover:text-brand disabled:text-muted disabled:hover:text-muted cursor-pointer disabled:cursor-default"
+                    >
+                      {estate}
+                    </button>
+                  </li>
+                ))}
+              </ul>
             ) : (
-              <div className="py-6 text-center w-full text-zinc-400 dark:text-zinc-500 text-sm">
-                No matching neighborhoods found for "{searchQuery}". But our couriers cover the entire {currentCity.name} metropolitan area!
-              </div>
+              <p className="mt-6 text-sm text-muted">
+                No neighbourhood called “{searchQuery}” in our list, but we may still cover it. Enter
+                your full address at the top of the page to check.
+              </p>
             )}
           </div>
-
-          {/* Delivery Note footer */}
-          <div className="mt-8 pt-4 border-t border-zinc-100 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 gap-2">
-            <span className="flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-              Don't see your specific estate? Enter your exact pin in the search bar above.
-            </span>
-            <a
-              href="#hero-address-search-input"
-              className="font-bold text-zinc-900 dark:text-[#FFC244] hover:underline"
-            >
-              Order to my location →
-            </a>
-          </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 };
